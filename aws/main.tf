@@ -49,10 +49,11 @@ resource "aws_cognito_user_pool" "this" {
     # ref: https://jpn.nec.com/cybersecurity/blog/200918/index.html
     minimum_length = 8
 
-    require_lowercase = true
-    require_numbers   = true
-    require_symbols   = true
-    require_uppercase = true
+    require_lowercase                = true
+    require_numbers                  = true
+    require_symbols                  = true
+    require_uppercase                = true
+    temporary_password_validity_days = 7
   }
 
   # TODO: schema は別途検討
