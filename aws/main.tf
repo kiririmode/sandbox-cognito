@@ -13,11 +13,11 @@ resource "aws_cognito_user_pool" "this" {
     }
   }
 
-  mfa_configuration = "ON"
-  software_token_mfa_configuration {
-    enabled = true
-  }
-  sms_authentication_message = "セキュリティコード: {####}"
+  mfa_configuration = "OFF"
+  # software_token_mfa_configuration {
+  #   enabled = false
+  # }
+  # sms_authentication_message = "セキュリティコード: {####}"
   # TODO: sms_configuration
 
   username_configuration {
@@ -56,7 +56,6 @@ resource "aws_cognito_user_pool" "this" {
     temporary_password_validity_days = 7
   }
 
-  # TODO: schema は別途検討
   # Cognito 側にあまり多くの情報を持つのは非推奨だったはずなので、最小限に留める
   schema {
     attribute_data_type = "String"
@@ -74,8 +73,18 @@ resource "aws_cognito_user_pool_client" "name" {
   user_pool_id = aws_cognito_user_pool.this.id
 
   # SPA なので、クライアントシークレットを発行したとしてもセキュアに守れない
-  generate_secret       = false
-  access_token_validity = 1
+  generate_secret = false
+
+  prevent_user_existence_errors = "ENABLED"
+
+
+  token_validity_units {
+    access_token  = "minutes"
+    id_token      = "minutes"
+    refresh_token = "days"
+  }
+  access_token_validity = 60 # 分
+  id_token_validity     = 60 # 分
 
   callback_urls = [
     "http://localhost:8080/"
@@ -91,5 +100,4 @@ resource "aws_cognito_user_pool_client" "name" {
   ]
   allowed_oauth_scopes                 = ["openid"]
   allowed_oauth_flows_user_pool_client = true
-
 }

@@ -23,3 +23,27 @@ ref:
 EOT
   default     = false
 }
+
+variable "users" {
+  type = map(object({
+    email = string
+  }))
+  description = <<EOT
+Cognito User Poolに設定するグループとユーザの組。
+
+```
+{
+  "tarou@example.com" = {
+    email: "tarou@example.com",
+    hoge: "fuga"
+  },
+}
+```
+EOT
+  default     = {}
+}
+
+variable "group_user_mapping" {
+  type        = map(list(string))
+  description = "どのグループにどのユーザが紐づくのかのマッピング。keyがグループ名、valueがユーザ名のlist。"
+}
